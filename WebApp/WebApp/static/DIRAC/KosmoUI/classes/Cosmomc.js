@@ -218,7 +218,7 @@ Ext.define('DIRAC.Cosmomc.classes.Cosmomc', {
                     });
                     //alert(me.jdl.findRecord('name','InputSandbox').get('value').replace(new RegExp('\"[a-zA-Z_]+\.ini\"'),'"'+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'.ini"'));
                     me.jdl.findRecord('name','Arguments').set('value','"'+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'"');
-                    me.jdl.findRecord('name','OutputPath').set('value',me.jdl.findRecord('name','OutputPath').get('value').replace(new RegExp('[^\/]+\/%'),me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'\/%'));
+                    me.jdl.findRecord('name','OutputPath').set('value',me.jdl.findRecord('name','OutputPath').get('value').replace(new RegExp('\/[^\/]*\/%'),'\/'+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'\/%'));
                     me.jdl.findRecord('name','InputData').set('value',me.jdl.findRecord('name','InputData').get('value').replace(new RegExp('[^\/]+[.]ini'),me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'.ini'));
                     me.jeditiniprop.enable();
                     me.jeditinitree.enable();
@@ -502,7 +502,7 @@ Ext.define('DIRAC.Cosmomc.classes.Cosmomc', {
             listeners: {
                 change: function(editor, e) {
                     me.jdl.findRecord('name','JobGroup').set('value','"'+e+'"');
-                    me.jdl.findRecord('name','OutputPath').set('value',me.jdl.findRecord('name','OutputPath').get('value').replace(new RegExp('[^\/]+\/%'),e+'\/%'));
+                    me.jdl.findRecord('name','OutputPath').set('value',me.jdl.findRecord('name','OutputPath').get('value').replace(new RegExp('\/[^\/]*\/%'),'\/'+e+'\/%'));
                     //me.jdl.sync();
                     //alert(me.jdl.findRecord('name','JobGroup').getId());
                 }
