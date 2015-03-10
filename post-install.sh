@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf defaults readme releases.cfg
 rsync -a WebApp ../WebAppDIRAC
 # vzn = verbose, compress, dry
 
