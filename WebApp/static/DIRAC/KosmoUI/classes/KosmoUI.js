@@ -298,7 +298,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             ],
             listeners: {
                 select: function(selModel, record, index, options){
-		    var msg = new Ext.LoadMask({target:me.jeditiniprop, msg:"Please wait..."});
+                    var msg = new Ext.LoadMask({target:me.jeditiniprop, msg:"Please wait..."});
                     msg.show();
                     Ext.Ajax.request({
                         url:GLOBAL.BASE_URL + 'KosmoUI/getIni',
@@ -319,9 +319,9 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                                 }
                             }
                             synchro();
-		    	    msg.hide();
-		    	    msg.disable();
-                    	    me.jeditiniprop.enable();
+                            msg.hide();
+                            msg.disable();
+                            me.jeditiniprop.enable();
                         },
                         failure:function(response){console.log(response.responseText); },
                     });
