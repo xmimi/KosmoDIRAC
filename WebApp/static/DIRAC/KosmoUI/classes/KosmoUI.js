@@ -11,7 +11,7 @@ const changelog='<b>Changelog:</b></br><ul style="list-style-type:none"><li>2015
 
 const manual='<b>Manual:</b><ul><li>install project&lsquo;s directories under <i>kosmoui</i> directory in the user&lsquo;s home directory</li><li>every project should include following mandatory directories: <i><ul style="list-style-type:none"><li>ini</li><li>output</li></li></ul></i>and a job.jdl file</li><li><i>include</i> directory are optional and read-only. Files in this folder have to be a tar gzipped file and named as <i>package.gz</i></li></ul>';
 
-const issue='<b>Issues:</b><ul><li>action time</li></ul>';
+const issue='<b>Issues:</b><ul><li>The execution time of command depends on the charge of DIRAC Storage Element. Some opetation might take very long time.</li></ul>';
 
 helpnews=manual+issue+changelog;
 
