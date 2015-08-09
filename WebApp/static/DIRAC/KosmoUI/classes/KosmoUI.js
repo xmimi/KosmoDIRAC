@@ -5,8 +5,15 @@
  * http://www.sencha.com/license
  */
 
-const helpabout ='<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.0</br>Developper &nbsp;: &nbsp;LI &nbsp;Xiabo</br>Contact&nbsp;:&nbsp;li.xiabo@gmail.com</center>';
-const helpnews='<b>Changelog:</b></br><ul><li>Add multiproject functionnality</li><li>Add icons</li><li>Add info/help tab</li><li>Bug fixes</li></ul></br><b>Manual:</b><ul><li>install project&lsquo;s directories under kosmoui in the user&lsquo;s home directory</li><li>every project should include <i>directories: include, output, ... and a jdl file</i></li><li>every include set have to be a tar gzipped file and named as <i>package</i>.gz</li></ul>';
+const helpabout ='<center></br></br><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.0</br>Developper &nbsp;: &nbsp;LI &nbsp;Xiabo</br>Contact&nbsp;:&nbsp;li.xiabo@gmail.com</center>';
+
+const changelog='<b>Changelog:</b></br><ul style="list-style-type:none"><li>2015-08-09</li><ul style="list-style-type:disc"><li>Add multiproject functionnality</li><li>Add icons</li><li>Add info/help tab</li></ul></ul><ul style="list-style-type:none"><li>2015-02-12</li><ul style="list-style-type:disc"><li>Initial version</li></ul></ul></br>';
+
+const manual='<b>Manual:</b><ul><li>install project&lsquo;s directories under <i>kosmoui</i> directory in the user&lsquo;s home directory</li><li>every project should include following mandatory directories: <i><ul style="list-style-type:none"><li>ini</li><li>output</li></li></ul></i>and a job.jdl file</li><li><i>include</i> directory are optional and read-only. Files in this folder have to be a tar gzipped file and named as <i>package.gz</i></li></ul>';
+
+const issue='<b>Issues:</b><ul><li>action time</li></ul>';
+
+helpnews=manual+issue+changelog;
 
 Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
         extend : 'Ext.dirac.core.Module',
@@ -70,40 +77,45 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             //title: '<div style="background-color:yellow;color:blue">job editor</div>',
             title: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/prepare-2.png width="36"></center>',
             layout: 'border',
-            tooltip: 'Edit job parameters to send',
+            tooltip: 'Edit&nbsp;job&nbsp;parameters&nbsp;to&nbsp;send',
         });
 
         me.jman = new Ext.create('Ext.panel.Panel', {
             //title: '<div style="background-color:moccasin;color:blue">job manager</div>',
             title: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/moni.png width="36"></center>',
             layout: 'border',
-            tooltip: 'Manage online jobs',
+            tooltip: 'Manage&nbsp;online&nbsp;jobs',
         });
 
         me.jproc = new Ext.create('Ext.panel.Panel', {
             //title: '<div style="background-color:khaki;color:blue">data manager</div>',
             title: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/dataExport.png width="36"></center>',
             layout: 'border',
-            tooltip: "Manage data",
+            tooltip: "Manage&nbsp;data",
         });
 
         me.jhelp = new Ext.create('Ext.panel.Panel', {
             //title: '<div style="background-color:green;color:blue">about</div>',
             title: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/info.png width="36"></center>',
             layout: 'vbox',
-            tooltip: 'Help and about this software',
+            tooltip: 'Help&nbsp;and&nbsp;about&nbsp;this&nbsp;software',
             items: [{
                 xtype:'panel',
                 flex: 1,
                 width: '100%',
                 html: helpabout,
-                disable: true,
+		bodyStyle: 'background: lightgray;',
+		//layout: {
+		//    type: 'vbox',
+		//    pack: 'center',
+		//},
+                //disable: true,
             },{
                 xtype:'panel',
                 flex: 1,
                 width: '100%',
                 html: helpnews,
-                //editable:false,
+		autoScroll: true,
             }],
         });
 
@@ -646,7 +658,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 xtype: 'button',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/summary.png width="36"></center>',
                 //text: 'summary',
-                tooltip: 'job summary',
+                tooltip: 'job&nbsp;summary',
                 handler: function() {
                     logMe('<table width="100%" cellspacing="0" cellpadding="0"><tr><td align="left"><div style="color:MediumAquamarine;font-weight:bold;font-style: italic;text-decoration: underline; ">Summary</div></td><td align="right">'+(new Date()).toUTCString()+'</td></tr></table>');
                     sendCmd('summary');
@@ -655,7 +667,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 xtype: 'button',
                 //text: 'detail',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/detail.png width="36"></center>',
-                tooltip: 'job details',
+                tooltip: 'job&nbsp;details',
                 handler: function() {
                     logMe('<table width="100%" cellspacing="0" cellpadding="0"><tr><td align="left"><div style="color:MediumAquamarine;font-weight:bold;font-style: italic;text-decoration: underline; ">Detail</div></td><td align="right">'+(new Date()).toUTCString()+'</td></tr></table>');
                     sendCmd('detail');
@@ -671,7 +683,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 xtype: 'button',
                 //text: 'delete',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/delete-s.png width="36"></center>',
-                tooltip: 'delete this job',
+                tooltip: 'delete&nbsp;this&nbsp;job',
                 handler: function() {                    
                     Ext.Msg.confirm('Delete jobgroup', 'Are you sure you want to delete the '+me.jmansel.getValue()+' JobGroup ?', function(btn, text){
                         if (btn == 'yes'){
