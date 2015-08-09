@@ -104,18 +104,18 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 flex: 1,
                 width: '100%',
                 html: helpabout,
-		bodyStyle: 'background: lightgray;',
-		//layout: {
-		//    type: 'vbox',
-		//    pack: 'center',
-		//},
+                bodyStyle: 'background: lightgray;',
+                //layout: {
+                //    type: 'vbox',
+                //    pack: 'center',
+                //},
                 //disable: true,
             },{
                 xtype:'panel',
                 flex: 1,
                 width: '100%',
                 html: helpnews,
-		autoScroll: true,
+                autoScroll: true,
             }],
         });
 
