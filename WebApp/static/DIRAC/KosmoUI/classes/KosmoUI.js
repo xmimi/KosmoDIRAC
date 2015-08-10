@@ -7,13 +7,42 @@
 
 const helpabout ='<center></br></br><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.0</br>Developper &nbsp;: &nbsp;LI &nbsp;Xiabo</br>Contact&nbsp;:&nbsp;li.xiabo@gmail.com</center>';
 
-const changelog='<b>Changelog:</b></br><ul style="list-style-type:none"><li>2015-08-09</li><ul style="list-style-type:disc"><li>Add multiproject functionnality</li><li>Add icons</li><li>Add info/help tab</li></ul></ul><ul style="list-style-type:none"><li>2015-02-12</li><ul style="list-style-type:disc"><li>Initial version</li></ul></ul></br>';
+const changelog='<b>Changelog:</b></br>\
+      <ul style="list-style-type:none">\
+        <li>2015-08-09</li>\
+        <ul style="list-style-type:disc">\
+          <li>Add multiproject functionnality</li>\
+          <li>Add icons</li><li>Add info/help tab</li>\
+        </ul>\
+      </ul>\
+      <ul style="list-style-type:none">\
+        <li>2015-02-12</li>\
+        <ul style="list-style-type:disc">\
+          <li>Initial version</li>\
+        </ul>\
+      </ul></br>';
 
-const manual='<b>Manual:</b><ul><li>install project&lsquo;s directories under <i>kosmoui</i> directory in the user&lsquo;s home directory</li><li>every project should include following mandatory directories: <i><ul style="list-style-type:none"><li>ini</li><li>output</li></li></ul></i>and a job.jdl file</li><li><i>include</i> directory are optional and read-only. Files in this folder have to be a tar gzipped file and named as <i>package.gz</i></li></ul>';
+const manual='<b>Manual:</b>\
+      <ul>\
+        <li>install project&lsquo;s directories under <i>kosmoui</i> directory in the user&lsquo;s home directory</li>\
+        <li>every project should include following mandatory directories:\
+          <ul style="list-style-type:none">\
+            <li><i>ini</i></li>\
+            <li><i>output</i></li>\
+          </ul>\
+          and a <i>job.jdl</i> file\
+        </li>\
+        <li><i>include</i> directory are optional and read-only. Files in this folder have to be a tar gzipped file and named as <i>package.gz</i>\
+        </li>\
+      </ul>';
 
-const issue='<b>Issues:</b><ul><li>The execution time of command depends on the charge of DIRAC Storage Element. Some opetation might take very long time.</li></ul>';
+const issue='<b>Issues:</b>\
+      <ul>\
+        <li>The execution time of command depends on the charge of DIRAC Storage Element. Some operation might take very long time.\
+        </li>\
+      </ul>';
 
-helpnews=manual+issue+changelog;
+const helpnews=manual+issue+changelog;
 
 Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
         extend : 'Ext.dirac.core.Module',
