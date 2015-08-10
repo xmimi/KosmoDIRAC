@@ -4,14 +4,13 @@ Script.parseCommandLine( ignoreErrors = True )
 from DIRAC.Core.Security.X509Chain                       import X509Chain
 from DIRAC.Core.Security                                 import Locations
 from DIRAC.Interfaces.API.Dirac import Dirac
-from DIRAC.FrameworkSystem.Client.ProxyManagerClient import ProxyManagerClient
 from DIRAC.Core.DISET.RPCClient import RPCClient
 from DIRAC.Core.Utilities.Time import toString, date, day
 from DIRAC import S_OK, S_ERROR
 import json, os, shutil, re, ast, time, random, tarfile, mimetypes, base64, zipfile
 import DIRAC
 
-root='/esr/user'        #dirac filecatalogue structure
+#root='/esr/user'        #dirac filecatalogue structure
 batch='/include'
 inidir='/ini'
 outdir= '/output'
@@ -83,7 +82,7 @@ class KosmoUIHandler(WebHandler):
                     self.write(obj)
                 else:
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                     result = dataMgr.getFile(str(self.__projectHome()+batch+'/'+incl), destinationDir=str(self.tmpdir) )
                     obj = ''
@@ -119,7 +118,7 @@ class KosmoUIHandler(WebHandler):
                 else:
                     #tmp = str(time.time())+str(random.random())
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                     result = dataMgr.getFile(str(self.__projectHome()+inidir+'/'+str(name)+'.ini'), destinationDir=str(self.tmpdir) )
                     f= (open(self.tmpdir+'/'+name+'.ini','r'))
@@ -140,7 +139,8 @@ class KosmoUIHandler(WebHandler):
             else:
                 RPC = RPCClient( "DataManagement/FileCatalog" )
                 username = str(self.getSessionData()["user"]["username"])
-                dir = root+'/'+username[0:1]+'/'+username+kosmoui
+                self.root='/'+self.__getVO()+'/user'
+                dir = self.root+'/'+username[0:1]+'/'+username+kosmoui
                 result = RPC.listDirectory(dir, True)
                 #print result
                 obj = '[ '
@@ -217,7 +217,7 @@ class KosmoUIHandler(WebHandler):
                 if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                 if (cmd == 'new'):
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     f = open(self.tmpdir+'/'+name+'.ini','w')
                     f.write('\0')
                     f.close()
@@ -225,12 +225,12 @@ class KosmoUIHandler(WebHandler):
                     os.remove(self.tmpdir+'/'+name+'.ini')
                 elif (cmd == 'del'):
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     result = dataMgr.removeFile(str(self.__projectHome()+inidir+'/'+str(name)+'.ini') )
                 elif (cmd == 'dup'):
                     dst = self.get_argument('dst','')
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     result = dataMgr.getFile(str(self.__projectHome()+inidir+'/'+str(name)+'.ini'), destinationDir=str(self.tmpdir) )
                     result = dataMgr.putAndRegister(str(self.__projectHome()+inidir+'/'+str(dst)+'.ini'),str(self.tmpdir+'/'+name+'.ini'),'DIRAC-USER' )
                     os.remove(self.tmpdir+'/'+name+'.ini')
@@ -243,7 +243,7 @@ class KosmoUIHandler(WebHandler):
                 self.cosmodir='/'+pro
                 self.tmpdir='/tmp/'+pro+str(time.time())+str(random.random())
                 from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                dataMgr = DataManager( vo = 'esr' )
+                dataMgr = DataManager( vo = self.__getVO() )
                 if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                 result = dataMgr.getFile(str(self.__projectHome()+jdlfile), destinationDir=str(self.tmpdir))
                 #print self.tmpdir
@@ -268,7 +268,7 @@ class KosmoUIHandler(WebHandler):
                 self.cosmodir='/'+pro
                 self.tmpdir='/tmp/'+pro+str(time.time())+str(random.random())
                 from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                dataMgr = DataManager( vo = 'esr' )
+                dataMgr = DataManager( vo = self.__getVO() )
                 if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                 result = dataMgr.getFile(str(self.__projectHome()+jdlfile), destinationDir=self.tmpdir )
                 f=open(self.tmpdir+jdlfile,'w')
@@ -289,7 +289,7 @@ class KosmoUIHandler(WebHandler):
                 self.tmpdir='/tmp/'+pro+str(time.time())+str(random.random())
                 if arg:
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                     result = dataMgr.getFile(str(self.__projectHome()+jdlfile), destinationDir=str(self.tmpdir) )
                     from DIRAC.WorkloadManagementSystem.Client.WMSClient import WMSClient
@@ -312,7 +312,7 @@ class KosmoUIHandler(WebHandler):
                 self.tmpdir='/tmp/'+pro+str(time.time())+str(random.random())
                 if file:
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                     result = dataMgr.getFile(self.__projectHome()+inidir+'/'+str(file)+'.ini', destinationDir=self.tmpdir )
                     f=open(self.tmpdir+'/'+file+'.ini','w')
@@ -407,7 +407,7 @@ class KosmoUIHandler(WebHandler):
                     result = RPC.getFileMetadata(dir)
                     if result['Value']['Successful'][dir]['Size']<600000 :
                         from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                        dataMgr = DataManager( vo = 'esr' )
+                        dataMgr = DataManager( vo = self.__getVO() )
                         if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                         result = dataMgr.getFile(str(dir), destinationDir=str(self.tmpdir) )
                         mime = mimetypes.guess_type(self.tmpdir+'/'+dir.split('/')[-1])
@@ -431,7 +431,7 @@ class KosmoUIHandler(WebHandler):
         result = RPC.listDirectory(path, True)
         for i in result['Value']['Successful'][path]['Files'].keys():
             from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-            dataMgr = DataManager( vo = 'esr' )
+            dataMgr = DataManager( vo = self.__getVO() )
             res = dataMgr.getFile(str(path+'/'+i.split('/')[-1]), destinationDir=str(dir) )
         for i in result['Value']['Successful'][path]['SubDirs'].keys():
             os.makedirs(dir+'/'+i.split('/')[-1])
@@ -449,7 +449,7 @@ class KosmoUIHandler(WebHandler):
                 obj = ''
                 if RPC.isFile(dir)['Value']['Successful'][dir]:
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     if not os.path.isdir(self.tmpdir): os.makedirs(self.tmpdir)
                     result = dataMgr.getFile(str(dir), destinationDir=str(self.tmpdir) )
                     f = open(self.tmpdir+'/'+dir.split('/')[-1],'rb')
@@ -487,7 +487,7 @@ class KosmoUIHandler(WebHandler):
         RPC = RPCClient( "DataManagement/FileCatalog" )
         result = RPC.listDirectory(path, True)
         from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-        dataMgr = DataManager( vo = 'esr' )
+        dataMgr = DataManager( vo = self.__getVO() )
         for i in result['Value']['Successful'][path]['SubDirs'].keys():
             self.rmtree_rec(path+'/'+i.split('/')[-1])
         for i in result['Value']['Successful'][path]['Files'].keys():
@@ -506,7 +506,7 @@ class KosmoUIHandler(WebHandler):
                 obj = ''
                 if RPC.isFile(dir)['Value']['Successful'][dir]:
                     from DIRAC.DataManagementSystem.Client.DataManager import DataManager
-                    dataMgr = DataManager( vo = 'esr' )
+                    dataMgr = DataManager( vo = self.__getVO() )
                     result = dataMgr.removeFile(str(dir))
                 else:
                     self.rmtree_rec(dir)
@@ -536,19 +536,29 @@ class KosmoUIHandler(WebHandler):
 
     def __projectHome(self):
         username = str(self.getSessionData()["user"]["username"])
-        return root+'/'+username[0:1]+'/'+username+kosmoui+self.cosmodir
+        self.root='/'+self.__getVO()+'/user'
+        return self.root+'/'+username[0:1]+'/'+username+kosmoui+self.cosmodir
 
     def __getUserName(self, secondsOverride=None):
-        proxyManager = ProxyManagerClient()
+        #proxyManager = ProxyManagerClient()
         userData = self.getSessionData()
         userName = str(userData["user"]["username"])
         userGroup = str(userData["user"]["group"])
-        #userDN = str(userData["user"]["DN"])
         if userGroup == "visitor":
             return ""
         else:
-            #print userData
             return userName
+
+    def __getVO(self, secondsOverride=None):
+        #proxyManager = ProxyManagerClient()
+        userData = self.getSessionData()
+        userGroup = str(userData["user"]["group"])
+        if userGroup == "visitor": 
+            return ""
+        else:
+            from DIRAC.ConfigurationSystem.Client.Helpers.Registry import getVOForGroup
+            voName = getVOForGroup(userGroup )
+            return voName
 
     def __getGroupList(self):
         uname = self.__getUserName()
