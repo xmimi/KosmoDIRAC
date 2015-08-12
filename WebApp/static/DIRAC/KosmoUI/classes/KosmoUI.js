@@ -5,17 +5,20 @@
  * http://www.sencha.com/license
  */
 
-const helpabout ='<center></br></br><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.0</br>Developper &nbsp;: &nbsp;LI &nbsp;Xiabo</br>Contact&nbsp;:&nbsp;li.xiabo@gmail.com</center>';
+const helpabout ='<center></br><table><tr><td><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.1.0</td><td><table><tr><td>Developper &nbsp;:</td><td>LI&nbsp;Xiabo</td></tr><tr><td></td><td>QIAN&nbsp;Zuxuan</td><tr></table><table><tr><td>Contact&nbsp;:</td><td>li.xiabo@gmail.com</td></tr><tr><td></td><td>zuxuan.qian@gmail.com</td><tr></table></td></tr></table></center>';
 
 const changelog='<b>Changelog:</b></br>\
       <ul style="list-style-type:none">\
+        <li>2015-08-11</li>\
+        <ul style="list-style-type:disc">\
+          <li>Enhanced UI</li>\
+          <li>Change labels to icons</li>\
+        </ul>\
         <li>2015-08-09</li>\
         <ul style="list-style-type:disc">\
           <li>Add multiproject functionnality</li>\
           <li>Add icons</li><li>Add info/help tab</li>\
         </ul>\
-      </ul>\
-      <ul style="list-style-type:none">\
         <li>2015-02-12</li>\
         <ul style="list-style-type:disc">\
           <li>Initial version</li>\
@@ -28,11 +31,12 @@ const manual='<b>Manual:</b>\
         <li>every project should include following mandatory directories:\
           <ul style="list-style-type:none">\
             <li><i>ini</i></li>\
+            <li><i>include</i></li>\
             <li><i>output</i></li>\
           </ul>\
           and a <i>job.jdl</i> file\
         </li>\
-        <li><i>include</i> directory are optional and read-only. Files in this folder have to be a tar gzipped file and named as <i>package.gz</i>\
+        <li><i>include</i> directory is read-only and can be empty. Files in this folder have to be tar gzipped files and named as <i>package.gz</i>\
         </li>\
       </ul>';
 
@@ -130,18 +134,13 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             tooltip: 'Help&nbsp;and&nbsp;about&nbsp;this&nbsp;software',
             items: [{
                 xtype:'panel',
-                flex: 1,
+                flex: 4,
                 width: '100%',
                 html: helpabout,
                 bodyStyle: 'background: lightgray;',
-                //layout: {
-                //    type: 'vbox',
-                //    pack: 'center',
-                //},
-                //disable: true,
             },{
                 xtype:'panel',
-                flex: 1,
+                flex: 7,
                 width: '100%',
                 html: helpnews,
                 autoScroll: true,
@@ -283,8 +282,9 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             forceFit: true,
             bbar: { 
                 enableOverflow: true,
-                items: [{
-                    text: 'New', 
+                items: ['->',{
+                    text: '&#10133;', 
+                    tooltip: 'new&nbsp;ini',
                     handler: function() {
                             Ext.Msg.prompt('Name', 'Please name the ini file:', function(btn, text){
                                 if (btn == 'ok' && text != '') {
@@ -300,7 +300,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         }
                     },
                     {
-                    text: 'Remove', 
+                    text: '&#10134;', 
+                    tooltip: 'remove&nbsp;ini',
                     handler: function() {
                             Ext.MessageBox.confirm('Cancel', 'Are you sure you want to delete '+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'?', function(btn, text){
                             if (btn == 'yes' && text != '') {
@@ -317,7 +318,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         }
                     },
                     {
-                    text: 'Duplicate',
+                    text: '<div style="display: inline-block; font-size: 140%; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg);">&#x29C9;</div>',
+                    tooltip: 'duplicate&nbsp;selected&nbsp;ini',
                     handler: function() {
                             Ext.Msg.prompt('Duplicate', 'Please name the duplicate ini file other than '+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+':', function(btn, text){
                             if (btn == 'ok' && text != '') {
@@ -331,7 +333,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                             }
                         });
                         }
-                    },
+                    },'->',
                 ]
             },
             columns: [
@@ -389,6 +391,11 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 property: 'var',
                 direction: 'ASC' // or 'ASC'
             }],
+            listeners: {
+                'add': function(store, records, index, eOpts ) {
+                    me.jeditiniprop.getView().focusRow(index)
+                },
+            }
         });
 
         me.jdl = new Ext.create('Ext.data.Store', {
@@ -443,18 +450,27 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             forceFit: true,
             bbar:{
                 enableOverflow: true, 
-                items: [{
-                    text: 'Add',
+                items: ['->',{
+                    text: '&#10133;/<div style="display: inline-block; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -o-transform: rotate(-45deg);">&#9906;</div>',
+                    tooltip: 'add/find&nbsp;variable',
                     handler: function() {
                         Ext.Msg.prompt('Name', 'New variable name:', function(btn, text){
-                            if (btn == 'ok' && text != '')
-                                me.inipropval.add({'var': text, 'val': ''});
-                                me.inipropval.sync();
-                                updateRemoteIni();
+                            if (btn == 'ok' && text != '') {
+                                if (me.inipropval.findRecord('var',text)==null) {
+                                    me.inipropval.add({'var': text, 'val': ''});
+                                    me.inipropval.sync();
+                                    me.jeditiniprop.getView().focusRow(me.inipropval.indexOf(me.inipropval.findRecord('var',text)));
+                                    updateRemoteIni();
+                                }
+                                else {
+                                    me.jeditiniprop.getView().focusRow(me.inipropval.indexOf(me.inipropval.findRecord('var',text)));
+                                }
+                            }
                         });
                     },
                 },{ 
-                    text: 'Remove',
+                    text: '&#10134;',
+                    tooltip: 'remove&nbsp;variable',
                     handler: function() {
                         Ext.Msg.confirm('Delete', 'Really remove the value of '+me.jeditiniprop.getSelectionModel().getSelection()[0].get('var')+' ?', function(btn){
                             if (btn == 'yes')
@@ -463,7 +479,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                                 updateRemoteIni();
                         });
                     },                    
-                }],
+                },'->'],
             },
             columns: [
                 { text: 'Variable',  menuDisabled: true, dataIndex: 'var' , sortable: true,renderer: function(value, meta, record) {meta.tdAttr = 'data-qtip="'+value+'"';return value;},},
@@ -480,7 +496,14 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                     me.inipropval.getAt(e.rowIdx).set(e.field, e.value);
                     me.inipropval.sync();
                     updateRemoteIni();
-                }
+                },
+                enable: function (e) {
+                    if (me.jeditinitree.getSelectionModel().getSelection().length==1 && me.jeditinitree.getSelectionModel().getSelection()[0].isLeaf()) Ext.getCmp('inival').enable();
+                    else Ext.getCmp('inival').disable();
+                },
+                disable: function(e) {
+                    Ext.getCmp('inival').disable();
+                },
             },
         });
 
@@ -527,6 +550,10 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 checkchange: function (){
                     updateRemoteIni();
                 },
+                select: function (tree, record, eOpts ){
+                    if (record.isLeaf() && !me.jeditiniprop.isDisabled()) Ext.getCmp('inival').enable();
+                    else Ext.getCmp('inival').disable();
+                },
             },
             tbar: [
                 {
@@ -544,6 +571,28 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         }
                     },
                 },
+            ],
+            lbar: ['->',
+                {
+                    xtype: 'button',
+                    text: '&#x2770;',
+                    tooltip:'insert&nbsp;variable&nbsp;to&nbsp;ini',
+                    id: 'inival',
+                    disabled: true,
+                    listeners: {
+                        click: function() {
+                            //console.log(me.jeditinitree.getSelectionModel().getSelection()[0].get('name'));
+                            if (me.inipropval.findRecord('var',me.jeditinitree.getSelectionModel().getSelection()[0].get('name'))==null) {
+                                me.inipropval.add({'var': me.jeditinitree.getSelectionModel().getSelection()[0].get('name'), 'val': ''});
+                                me.inipropval.sync();
+                                updateRemoteIni();
+                            }
+                            else {
+                                me.jeditiniprop.getView().focusRow(me.inipropval.indexOf(me.inipropval.findRecord('var',me.jeditinitree.getSelectionModel().getSelection()[0].get('name'))))
+                            }
+                        },
+                    },
+                },'->',
             ],
         });
 
@@ -622,7 +671,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                                 meta.style = 'white-space:normal; color: grey';
                                 return value;
                             },
-                            //editor: { xtype: 'textarea', height: 50 }
                             field: {allowBlank: true},
                         }],
                         plugins: [
@@ -632,10 +680,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         ],
                         listeners: {
                             edit: function(editor, e) {
-                        //        alert(e.rowIdx);
                                 me.jdl.getAt(e.rowIdx).set(e.field, e.value);
-                        //        me.jdl.sync();
-                        //        updateJdl();
                             }
                         }
                     }],
@@ -658,6 +703,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
         me.jeditjdl.add([{
             xtype: 'textfield',
             fieldLabel: 'Name',
+            style: 'backgroundColor: lightgray;',
             labelAlign:'right',
             id: 'jdl-name',
             listeners: {
@@ -669,7 +715,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
         },{
             xtype:'numberfield',
             fieldLabel:'Node',
-            value: 1/*me.jdl.findRecord('name','Parameters').get('value')*/,
+            //value: 1,
+            style: 'backgroundColor: lightgray;',
             minValue: 1,
             id: 'jdl-node',
             labelAlign:'right',
@@ -686,7 +733,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             items: [{
                 xtype: 'button',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/summary.png width="36"></center>',
-                //text: 'summary',
                 tooltip: 'job&nbsp;summary',
                 handler: function() {
                     logMe('<table width="100%" cellspacing="0" cellpadding="0"><tr><td align="left"><div style="color:MediumAquamarine;font-weight:bold;font-style: italic;text-decoration: underline; ">Summary</div></td><td align="right">'+(new Date()).toUTCString()+'</td></tr></table>');
@@ -694,7 +740,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 }
             }, {
                 xtype: 'button',
-                //text: 'detail',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/detail.png width="36"></center>',
                 tooltip: 'job&nbsp;details',
                 handler: function() {
@@ -710,7 +755,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 }
             },*/ {
                 xtype: 'button',
-                //text: 'delete',
                 text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/delete-s.png width="36"></center>',
                 tooltip: 'delete&nbsp;this&nbsp;job',
                 handler: function() {                    
@@ -790,7 +834,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             }
             obj = packchk.replace(/^\s*[\r\n]/gm,'');
             me.inipropval.each(function(rec){obj+=rec.get('var')+"="+rec.get('val')+"\n"});
-            console.log(obj);
+            //console.log(obj);
             Ext.Ajax.request({
                 url : GLOBAL.BASE_URL + 'KosmoUI/updateIni',
                 method : 'POST', 
