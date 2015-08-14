@@ -5,11 +5,11 @@
  * http://www.sencha.com/license
  */
 
-const helpabout ='<center></br><table><tr><td><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>Version &nbsp;: &nbsp;2.1.0</td><td><table><tr><td>Developper &nbsp;:</td><td>LI&nbsp;Xiabo</td></tr><tr><td></td><td>QIAN&nbsp;Zuxuan</td><tr></table><table><tr><td>Contact&nbsp;:</td><td>li.xiabo@gmail.com</td></tr><tr><td></td><td>zuxuan.qian@gmail.com</td><tr></table></td></tr></table></center>';
+const helpabout ='<center></br><table><tr><td><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/logo.png></br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version &nbsp;: &nbsp;2.1.0</td><td><table><tr><td>Developper &nbsp;:</td><td>LI&nbsp;Xiabo</td></tr><tr><td></td><td>QIAN&nbsp;Zuxuan</td><tr></table><table><tr><td>Contact&nbsp;:</td><td>li.xiabo@gmail.com</td></tr><tr><td></td><td>zuxuan.qian@gmail.com</td><tr></table></td></tr></table></center>';
 
 const changelog='<b>Changelog:</b></br>\
       <ul style="list-style-type:none">\
-        <li>2015-08-11</li>\
+        <li>2015-08-12</li>\
         <ul style="list-style-type:disc">\
           <li>Enhanced UI</li>\
           <li>Change labels to icons</li>\
@@ -358,7 +358,7 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                                 }
                                 else if (lines[i].indexOf("=")!=-1){
                                     var l = lines[i].split("=");      
-                                    me.inipropval.add({"var":l[0],"val":l[1]});
+                                    me.inipropval.add({"var":l[0].replace(/\s+$/g,''),"val":l[1].replace(/^\s+/g,'')});
                                 }
                             }
                             synchro();
@@ -406,7 +406,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             proxy: {
                 type: 'ajax',
                 url: GLOBAL.BASE_URL + 'KosmoUI/jdl',
-                //url: myurl + 'jdl',
                     extraParams: {
                             u: GLOBAL.APP.configData["user"]["username"],
                     g: GLOBAL.APP.configData["user"]["group"],
@@ -432,7 +431,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                 property: 'job',
                 direction: 'ASC' // or 'ASC'
             }],
-            //autoLoad: true,
         });
 
         me.jdl.on('load',function (store, records, successful, eOpts ){
@@ -451,19 +449,21 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             bbar:{
                 enableOverflow: true, 
                 items: ['->',{
-                    text: '&#10133;/<div style="display: inline-block; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -o-transform: rotate(-45deg);">&#9906;</div>',
+                    text: '&#10133;/<div style="display: inline-block; font-size: 130%; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -o-transform: rotate(-45deg);">&#9906;</div>',
                     tooltip: 'add/find&nbsp;variable',
                     handler: function() {
-                        Ext.Msg.prompt('Name', 'New variable name:', function(btn, text){
+                        Ext.Msg.prompt('Name', 'Variable name:', function(btn, text){
                             if (btn == 'ok' && text != '') {
-                                if (me.inipropval.findRecord('var',text)==null) {
+                                //console.log(text);//console.log(me.inipropval.findRecord('var',text));
+                                //console.log(me.inipropval.findRecord('var',text).get('var')==text);
+                                if (me.inipropval.findExact('var',text)==-1) {
                                     me.inipropval.add({'var': text, 'val': ''});
                                     me.inipropval.sync();
-                                    me.jeditiniprop.getView().focusRow(me.inipropval.indexOf(me.inipropval.findRecord('var',text)));
+                                    me.jeditiniprop.getView().focusRow(me.inipropval.findExact('var',text));
                                     updateRemoteIni();
                                 }
                                 else {
-                                    me.jeditiniprop.getView().focusRow(me.inipropval.indexOf(me.inipropval.findRecord('var',text)));
+                                    me.jeditiniprop.getView().focusRow(me.inipropval.findExact('var',text));
                                 }
                             }
                         });
@@ -715,7 +715,6 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
         },{
             xtype:'numberfield',
             fieldLabel:'Node',
-            //value: 1,
             style: 'backgroundColor: lightgray;',
             minValue: 1,
             id: 'jdl-node',
