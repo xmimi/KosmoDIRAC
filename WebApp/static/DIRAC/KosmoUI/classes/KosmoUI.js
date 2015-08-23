@@ -283,7 +283,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             bbar: { 
                 enableOverflow: true,
                 items: ['->',{
-                    text: '&#10133;', 
+                    //text: '&#10133;',
+                    text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/16x16-plus.png width="16"></center>', 
                     tooltip: 'new&nbsp;ini',
                     handler: function() {
                             Ext.Msg.prompt('Name', 'Please name the ini file:', function(btn, text){
@@ -300,7 +301,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         }
                     },
                     {
-                    text: '&#10134;', 
+                    //text: '&#10134;', 
+                    text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/16x16-moins.png width="16"></center>',
                     tooltip: 'remove&nbsp;ini',
                     handler: function() {
                             Ext.MessageBox.confirm('Cancel', 'Are you sure you want to delete '+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+'?', function(btn, text){
@@ -318,7 +320,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         }
                     },
                     {
-                    text: '<div style="display: inline-block; font-size: 140%; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg);">&#x29C9;</div>',
+                    text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/16x16-double.png width="16"></center>',
+                    //text: '<div style="display: inline-block; font-size: 140%; -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg);">&#x29C9;</div>',
                     tooltip: 'duplicate&nbsp;selected&nbsp;ini',
                     handler: function() {
                             Ext.Msg.prompt('Duplicate', 'Please name the duplicate ini file other than '+me.jeditinisel.getSelectionModel().getSelection()[0].get('inifile')+':', function(btn, text){
@@ -449,7 +452,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
             bbar:{
                 enableOverflow: true, 
                 items: ['->',{
-                    text: '&#10133;/<div style="display: inline-block; font-size: 130%; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -o-transform: rotate(-45deg);">&#9906;</div>',
+                    text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/16x37-plus.slash.loupe.png height="16"></center>',
+                    //text: '&#10133;/<div style="display: inline-block; font-size: 130%; -webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg); -o-transform: rotate(-45deg);">&#9906;</div>',
                     tooltip: 'add/find&nbsp;variable',
                     handler: function() {
                         Ext.Msg.prompt('Name', 'Variable name:', function(btn, text){
@@ -469,7 +473,8 @@ Ext.define('DIRAC.KosmoUI.classes.KosmoUI', {
                         });
                     },
                 },{ 
-                    text: '&#10134;',
+                    //text: '&#10134;',
+                    text: '<center><img src='+GLOBAL.BASE_URL+'static/DIRAC/KosmoUI/images/16x16-moins.png width="16"></center>',
                     tooltip: 'remove&nbsp;variable',
                     handler: function() {
                         Ext.Msg.confirm('Delete', 'Really remove the value of '+me.jeditiniprop.getSelectionModel().getSelection()[0].get('var')+' ?', function(btn){
